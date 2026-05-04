@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <!-- Ничего критичного для бэкапа: модель в assets подкатывается в APK. -->
+</full-backup-content>
