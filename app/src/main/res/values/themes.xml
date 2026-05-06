@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--
-        Compose сам управляет цветами через MaterialTheme. Здесь мы оставляем
-        только базовый системный фон, скрытый ActionBar и нужные флаги статус-бара,
-        чтобы при холодном старте не мелькала белая заглушка.
-    -->
-    <style name="Theme.GazeTracker" parent="android:Theme.Material.NoActionBar">
-        <item name="android:statusBarColor">@android:color/black</item>
-        <item name="android:navigationBarColor">@android:color/black</item>
-        <item name="android:windowBackground">@android:color/black</item>
+    <style name="Theme.TMMDZ26" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorSecondary">@color/teal_200</item>
+        <item name="android:statusBarColor">@color/black</item>
     </style>
 </resources>

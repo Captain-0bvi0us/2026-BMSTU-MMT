@@ -1,38 +1,17 @@
-# ---- Gradle ----
-.gradle/
-build/
-!gradle/wrapper/gradle-wrapper.jar
-gradle-app.setting
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-# ---- Android ----
-local.properties
-*.apk
-*.aab
-*.ap_
-*.dex
-captures/
-
-# ---- Android Studio / IntelliJ ----
 *.iml
-.idea/
-.navigation/
-
-# ---- OS ----
+.gradle
+local.properties
+/.idea
 .DS_Store
-Thumbs.db
-desktop.ini
-
-# ---- Logs / dumps ----
+/build
+**/build/
+captures/
+*.apk
+*.ap_
+*.aab
+*.dex
+*.class
 *.log
-hs_err_pid*
-.cxx/
-
-# ---- Cursor / VSCode ----
-.vscode/
-.cursor/
-
-# ---- MediaPipe-модель (большая, скачивается скриптом) ----
-# Если хочешь хранить в git — закомментируй строку ниже
-app/src/main/assets/face_landmarker.task
+.externalNativeBuild
+.cxx
+*.keystore

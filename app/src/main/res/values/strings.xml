@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">GazeTracker</string>
-    <string name="permission_required_title">Нужно разрешение на камеру</string>
-    <string name="permission_required_body">
-        Приложение определяет углы Эйлера головы и направление взгляда
-        по кадрам с фронтальной камеры. Без доступа к камере оно работать не может.
-    </string>
-    <string name="permission_grant_button">Разрешить доступ</string>
-    <string name="permission_open_settings_button">Открыть настройки</string>
-    <string name="overlay_landmarks_template">Точек лица: %1$d</string>
-    <string name="overlay_face_not_detected">Лицо не обнаружено</string>
-    <string name="overlay_fps_template">FPS детектора: %1$.1f</string>
+    <string name="app_name">ТММ ДЗ26 — вариант 5</string>
+    <string name="placeholder_stats">Ожидание камеры…</string>
 </resources>
