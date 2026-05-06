@@ -39,5 +39,6 @@ dependencies {
     implementation("androidx.camera:camera-camera2:$cam")
     implementation("androidx.camera:camera-lifecycle:$cam")
     implementation("androidx.camera:camera-view:$cam")
+    implementation("com.google.mediapipe:tasks-core:0.10.18")
     implementation("com.google.mediapipe:tasks-vision:0.10.18")
 }
