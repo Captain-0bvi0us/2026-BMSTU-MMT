@@ -53,8 +53,12 @@ class FaceLandmarkerHelper(
             // На неделе 2 это нам понадобится для углов Эйлера.
             .setOutputFacialTransformationMatrixes(true)
             .setOutputFaceBlendshapes(false)
-            .setResultListener { result, input ->
-                val inferenceTime = SystemClock.uptimeMillis() - input.timestampMs
+            .setResultListener { result, _ ->
+                // В LIVE_STREAM временная метка кадра лежит в результате, а не во втором
+                // аргументе (это MPImage). См. официальный FaceLandmarkerHelper от Google:
+                // inferenceTime = finishTimeMs - result.timestampMs()
+                val inferenceTime =
+                    SystemClock.uptimeMillis() - result.timestampMs()
                 onResult(result, inferenceTime)
             }
             .setErrorListener { e -> onError(e.message ?: "Unknown MediaPipe error") }

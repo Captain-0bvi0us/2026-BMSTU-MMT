@@ -57,5 +57,5 @@ CameraX + MediaPipe Tasks Vision (Face Landmarker).
 - **AGP:** 8.2.2, Gradle 8.4
 - **UI:** Jetpack Compose (BOM 2024.02.00), Material 3
 - **Камера:** CameraX 1.3.1
-- **CV:** MediaPipe Tasks Vision 0.10.14
+- **CV:** MediaPipe Tasks Vision 0.10.26+ (нужна для совместимости с 16 KB page size на Android 15+)
 - **Min SDK:** 24, Target SDK: 34

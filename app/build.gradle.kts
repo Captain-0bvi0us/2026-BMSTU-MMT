@@ -95,7 +95,11 @@ dependencies {
     implementation("androidx.camera:camera-view:$cameraxVersion")
 
     // ---------- MediaPipe Tasks Vision (Face Landmarker) ----------
-    implementation("com.google.mediapipe:tasks-vision:0.10.14")
+    // 0.10.14 и ниже: нативные библиотеки без выравнивания под 16 KB страницы —
+    // на Android 15+ с page size 16 KB приложение падает при загрузке JNI / Studio
+    // показывает предупреждение про libimage_processing_util_jni.so.
+    // См. https://github.com/google-ai-edge/mediapipe/issues/6028 — фикс с 0.10.26.
+    implementation("com.google.mediapipe:tasks-vision:0.10.26")
 
     // ---------- Tests ----------
     testImplementation("junit:junit:4.13.2")
