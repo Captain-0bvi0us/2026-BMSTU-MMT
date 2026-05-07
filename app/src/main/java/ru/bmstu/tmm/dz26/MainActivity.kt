@@ -100,78 +100,99 @@ class MainActivity : AppCompatActivity(), FaceLandmarkerHelper.Listener {
     }
 
     private fun processFrame(imageProxy: ImageProxy) {
+        var bitmapBuffer: Bitmap? = null
+        var bm: Bitmap? = null
         try {
-            val bitmapBuffer = imageProxyToBitmapBuffer(imageProxy)
+            bitmapBuffer = imageProxyToBitmapBuffer(imageProxy)
             val w = bitmapBuffer.width
             val h = bitmapBuffer.height
             val matrix = Matrix().apply {
                 postRotate(imageProxy.imageInfo.rotationDegrees.toFloat())
                 postScale(-1f, 1f, w.toFloat(), h.toFloat())
             }
-            val bm = Bitmap.createBitmap(bitmapBuffer, 0, 0, w, h, matrix, true)
+            bm = Bitmap.createBitmap(bitmapBuffer, 0, 0, w, h, matrix, true)
             if (!bm.sameAs(bitmapBuffer)) {
                 bitmapBuffer.recycle()
+                bitmapBuffer = null
             }
             val mpImage = BitmapImageBuilder(bm).build()
             faceLandmarkerHelper?.detectAsync(mpImage, SystemClock.uptimeMillis())
+        } catch (t: Throwable) {
+            runOnUiThread {
+                binding.tvStats.text = "Ошибка обработки кадра: ${t.message ?: t.javaClass.simpleName}"
+            }
         } finally {
+            bm?.recycle()
+            bitmapBuffer?.recycle()
             imageProxy.close()
         }
     }
 
     override fun onResults(result: FaceLandmarkerResult) {
-        val faces = result.faceLandmarks()
-        val matOpt = result.facialTransformationMatrixes()
-        if (faces.isEmpty()) {
-            runOnUiThread { showEmpty() }
-            return
-        }
-        val landmarks = faces[0]
-        val matrix = if (matOpt.isPresent && matOpt.get().isNotEmpty()) {
-            val row = matOpt.get()[0]
-            FloatArray(16) { i -> row[i] }
-        } else {
-            null
-        }
+        try {
+            val faces = result.faceLandmarks()
+            val matOpt = result.facialTransformationMatrixes()
+            if (faces.isEmpty()) {
+                runOnUiThread { showEmpty() }
+                return
+            }
+            val landmarks = faces[0]
+            if (landmarks.size <= NOSE_TIP) {
+                runOnUiThread { showEmpty() }
+                return
+            }
 
-        val euler = matrix?.let { eulerZYXDegreesFromColumnMajor4x4(it) }
-        val gazeCam = computeGazeInCameraFrame(landmarks, matrix)
+            val matrix = if (matOpt.isPresent && matOpt.get().isNotEmpty() && matOpt.get()[0].size >= 16) {
+                val row = matOpt.get()[0]
+                FloatArray(16) { i -> row[i] }
+            } else {
+                null
+            }
 
-        val nose = landmarks[NOSE_TIP]
-        val yaw = euler?.first ?: Float.NaN
-        val pitch = euler?.second ?: Float.NaN
-        val roll = euler?.third ?: Float.NaN
+            val euler = matrix?.let { eulerZYXDegreesFromColumnMajor4x4(it) }
+            val gazeCam = computeGazeInCameraFrame(landmarks, matrix)
 
-        val text = buildString {
-            appendLine("ТММ ДЗ26, вариант 5 — голова + взгляд (очки/без очков)")
-            appendLine()
-            appendLine("Углы Эйлера (ZYX, градус), ориентация головы:")
-            appendLine("  yaw   = ${fmt(yaw)}")
-            appendLine("  pitch = ${fmt(pitch)}")
-            appendLine("  roll  = ${fmt(roll)}")
-            appendLine()
-            appendLine("Вектор взгляда (СК камеры, нормализованный):")
-            appendLine(
-                "  gx = ${fmt(gazeCam[0])}  gy = ${fmt(gazeCam[1])}  gz = ${fmt(gazeCam[2])}"
-            )
-            appendLine()
-            appendLine("Оси на кадре: X красный, Y зелёный, Z синий.")
-            appendLine("Жёлтая стрелка — взгляд; пурпурная — ось «вперёд» головы.")
-        }
+            val nose = landmarks[NOSE_TIP]
+            val yaw = euler?.first ?: Float.NaN
+            val pitch = euler?.second ?: Float.NaN
+            val roll = euler?.third ?: Float.NaN
 
-        runOnUiThread {
-            binding.tvStats.text = text
-            binding.overlayView.updateFrame(
-                OverlayView.Frame(
-                    yawDeg = yaw,
-                    pitchDeg = pitch,
-                    rollDeg = roll,
-                    gazeCamera = gazeCam,
-                    noseNormX = nose.x(),
-                    noseNormY = nose.y(),
-                    rotation4x4ColumnMajor = matrix
+            val text = buildString {
+                appendLine("ТММ ДЗ26, вариант 5 — голова + взгляд (очки/без очков)")
+                appendLine()
+                appendLine("Углы Эйлера (ZYX, градус), ориентация головы:")
+                appendLine("  yaw   = ${fmt(yaw)}")
+                appendLine("  pitch = ${fmt(pitch)}")
+                appendLine("  roll  = ${fmt(roll)}")
+                appendLine()
+                appendLine("Вектор взгляда (СК камеры, нормализованный):")
+                appendLine(
+                    "  gx = ${fmt(gazeCam[0])}  gy = ${fmt(gazeCam[1])}  gz = ${fmt(gazeCam[2])}"
                 )
-            )
+                appendLine()
+                appendLine("Оси на кадре: X красный, Y зелёный, Z синий.")
+                appendLine("Жёлтая стрелка — взгляд; пурпурная — ось «вперёд» головы.")
+            }
+
+            runOnUiThread {
+                binding.tvStats.text = text
+                binding.overlayView.updateFrame(
+                    OverlayView.Frame(
+                        yawDeg = yaw,
+                        pitchDeg = pitch,
+                        rollDeg = roll,
+                        gazeCamera = gazeCam,
+                        noseNormX = nose.x(),
+                        noseNormY = nose.y(),
+                        rotation4x4ColumnMajor = matrix
+                    )
+                )
+            }
+        } catch (t: Throwable) {
+            runOnUiThread {
+                binding.tvStats.text = "Ошибка onResults: ${t.message ?: t.javaClass.simpleName}"
+                binding.overlayView.updateFrame(null)
+            }
         }
     }
 
