@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">ТММ ДЗ26 — вариант 5</string>
-    <string name="placeholder_stats">Ожидание камеры…</string>
+    <string name="app_name">TMM Variant 5 Gaze</string>
 </resources>

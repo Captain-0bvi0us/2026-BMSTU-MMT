@@ -2,16 +2,21 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
 }
+
 android {
-    namespace = "ru.bmstu.tmm.dz26"
+    namespace = "com.example.variant5gaze"
     compileSdk = 34
+
     defaultConfig {
-        applicationId = "ru.bmstu.tmm.dz26"
-        minSdk = 26
+        applicationId = "com.example.variant5gaze"
+        minSdk = 24
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -21,24 +26,32 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions { jvmTarget = "17" }
-    buildFeatures { viewBinding = true }
+
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+
+    buildFeatures {
+        viewBinding = true
+    }
 }
+
 dependencies {
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.4")
-    val cam = "1.3.4"
-    implementation("androidx.camera:camera-core:$cam")
-    implementation("androidx.camera:camera-camera2:$cam")
-    implementation("androidx.camera:camera-lifecycle:$cam")
-    implementation("androidx.camera:camera-view:$cam")
-    implementation("com.google.mediapipe:tasks-core:0.10.18")
-    implementation("com.google.mediapipe:tasks-vision:0.10.18")
+
+    val cameraxVersion = "1.3.4"
+    implementation("androidx.camera:camera-core:$cameraxVersion")
+    implementation("androidx.camera:camera-camera2:$cameraxVersion")
+    implementation("androidx.camera:camera-lifecycle:$cameraxVersion")
+    implementation("androidx.camera:camera-view:$cameraxVersion")
+
+    implementation("com.google.mlkit:face-detection:16.1.7")
 }

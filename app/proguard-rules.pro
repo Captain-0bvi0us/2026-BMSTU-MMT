@@ -1,2 +1,1 @@
-# MediaPipe
--keep class com.google.mediapipe.** { *; }
+# Intentionally left minimal for student project.
